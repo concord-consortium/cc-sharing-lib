@@ -8,6 +8,8 @@ module.exports = {
   entry: {
     'sharing-lib': ["./src/index.ts"],
     'sharing-lib.min': ["./src/index.ts"],
+    'parent-demo': ["./src/demo/parent-view.tsx"],
+    'client-demo': ["./src/demo/client-view.tsx"]
   },
 
   output: {

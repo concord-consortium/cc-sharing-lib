@@ -1,13 +1,13 @@
 import { InitMessage } from "./init-message"
 
-export type Jpeg       = {type: "image/jpeg",               extension: "jpg"  }
-export type Csv        = {type: "text/csv",                 extension: "csv"  }
-export type Binary     = {type: "application/octet-stream", extension: "bin"  }
-export type Json       = {type: "application/json",         extension: "json" }
+export const Jpeg       = {type: "image/jpeg",               extension: "jpg"  }
+export const Csv        = {type: "text/csv",                 extension: "csv"  }
+export const Binary     = {type: "application/octet-stream", extension: "bin"  }
+export const Json       = {type: "application/json",         extension: "json" }
 
-export type RepresentationType = Jpeg | Csv | Binary | Json
+export type Url         = string
 
-export type Url            = string
+export type RepresentationType = {type:string, extension:string}
 
 export interface Representation {
   type: RepresentationType
