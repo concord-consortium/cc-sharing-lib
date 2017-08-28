@@ -9,7 +9,7 @@ import { IFramePhone } from "./iframe-phone";
 
 export interface SharableApp {
   application: LaunchApplication;
-  getDataFunc(): Representation[];
+  getDataFunc(context:InitMessage): Promise<Representation[]>;
 }
 
 export class SharingClient {
@@ -30,13 +30,15 @@ export class SharingClient {
   }
 
   sendPublish() {
-    const representations = this.app.getDataFunc();
-    const publishContent:Publishable = {
-      context: this.context,
-      createdAt: new Date(),
-      application: this.app.application,
-      representations: representations
-    };
-    this.phone.post(PublishResponseMessageName, publishContent);
+    const promise = this.app.getDataFunc(this.context);
+    promise.then((representations) => {
+      const publishContent:Publishable = {
+        context: this.context,
+        createdAt: new Date(),
+        application: this.app.application,
+        representations: representations
+      };
+      this.phone.post(PublishResponseMessageName, publishContent);
+    });
   }
 }

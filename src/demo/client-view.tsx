@@ -5,7 +5,7 @@ import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
 
 const iframePhone = require("iframe-phone");
-import { connect} from "./client-connect";
+import { demoClientConnect } from "./demo-client-connect";
 
 
 export interface ClientViewProps {}
@@ -24,7 +24,7 @@ export class ClientView extends React.Component<ClientViewProps, ClientViewState
   }
 
   componentDidMount() {
-    connect();
+    demoClientConnect();
   }
 
   render() {
