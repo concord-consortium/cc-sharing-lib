@@ -1,27 +1,27 @@
-import * as React from "react"
+import * as React from "react";
 import * as ReactDOM from "react-dom";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider"
-import RaisedButton from "material-ui/RaisedButton"
-import TextField from "material-ui/TextField"
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import RaisedButton from "material-ui/RaisedButton";
+import TextField from "material-ui/TextField";
 
-const iframePhone = require("iframe-phone")
+const iframePhone = require("iframe-phone");
 
 import {
   InitMessage,
   SharingParent,
-  IFramePhone } from "../index"
+  IFramePhone } from "../index";
 
 
 export interface PhoneTestProps {}
 export interface PhoneTestState {
-  url: string
-  connected: boolean
+  url: string;
+  connected: boolean;
 }
 
 export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestState> {
-  public state:PhoneTestState
-  phone: IFramePhone
-  sharePhone: SharingParent
+  public state:PhoneTestState;
+  phone: IFramePhone;
+  sharePhone: SharingParent;
 
   constructor(props:PhoneTestProps){
     super(props);
@@ -36,10 +36,10 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
   }
 
   componentDidUpdate(prevProps:PhoneTestProps,prevState:PhoneTestState) {
-    const lastUrl = prevState.url
-    const thisUrl = this.state.url
-    if(lastUrl != thisUrl) {
-      this.setupPhone()
+    const lastUrl = prevState.url;
+    const thisUrl = this.state.url;
+    if(lastUrl !== thisUrl) {
+      this.setupPhone();
     }
   }
 
@@ -52,27 +52,29 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
       localId: "x",
       requestTime: new Date()
     };
+
     const receivePub = (data:any) => {
-      console.log("Received pub")
-      console.log(data)
-    }
+      console.log("Received pub");
+      console.log(data);
+    };
+
     if(this.phone) {
-      this.phone.disconnect()
+      this.phone.disconnect();
     }
-    this.phone = iframePhone.ParentEndpoint(this.refs.iframe, this.connectionComplete.bind(this))
-    this.sharePhone = new SharingParent(this.phone, context, receivePub)
+    this.phone = iframePhone.ParentEndpoint(this.refs.iframe, this.connectionComplete.bind(this));
+    this.sharePhone = new SharingParent(this.phone, context, receivePub);
     console.log('setupPhone done');
   }
 
   connectionComplete() {
-    this.setState({connected: true})
+    this.setState({connected: true});
   }
 
   render() {
-    const url = this.state.url
-    const connectionStatus = this.state.connected ? "Connected" : "Disconnected"
-    const lastMessage = "(none)"
-    const clickHandler = this.sharePhone ? () => this.sharePhone.sendPublish() :() => console.log("dang")
+    const url = this.state.url;
+    const connectionStatus = this.state.connected ? "Connected" : "Disconnected";
+    const lastMessage = "(none)";
+    const clickHandler = this.sharePhone ? () => this.sharePhone.sendPublish() :() => console.log("dang");
     return(
       <MuiThemeProvider>
         <div className="container">
