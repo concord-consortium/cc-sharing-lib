@@ -22,7 +22,14 @@ There are only 3 message types defined:
 2. Compile `npm run build`
 
 
-## Running the demo / tester app ##
+## Running the demo & tester app ##
+
+You can view an [online demo](http://sharing-demo.concord.org/branch/master/demo.html).
+
+Deployment happens automagically using travis and `branch/<branchname>` urls.
+Production branch goes to [http://sharing-demo.concord.org/demo.html](http://sharing-demo.concord.org/branch/master/demo.html)
+
+## Running a local demo & tester app ##
 (This process could use some improvement …  )
 
 1. Compile `npm run build`
