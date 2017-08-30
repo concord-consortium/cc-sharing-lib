@@ -11,8 +11,13 @@ if [ -d _site ]; then
   rm -rf _site
 fi
 
+if [ -d dist ]; then
+  rm -rf dist
+fi
+
+cp -r _bundles dist
 if [ "$TRAVIS_BRANCH" = "production" ]; then
-  mv _bundles _site
+  mv dist _site
 else
   # the 2> is to prevent error messages when no match is found
   CURRENT_TAG=`git describe --tags --exact-match $TRAVIS_COMMIT 2> /dev/null`

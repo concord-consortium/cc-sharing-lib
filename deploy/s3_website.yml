@@ -18,7 +18,7 @@ max_age:
   "sharing-demo/*": 600 # 10 minutes
   "sharing-demo/version/*": 31536000 # 1 year
   "sharing-demo/branch/*": 0
-# cloudfront_distribution_id: E1X5RJ80GWMRYM
+# cloudfront_distribution_id: E3880LKQH5TZSK
 cloudfront_distribution_config:
   aliases:
     quantity: 1
