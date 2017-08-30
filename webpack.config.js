@@ -47,6 +47,9 @@ module.exports = {
       minimize: true,
       sourceMap: true,
       include: /\.min\.js$/,
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: "src/demo/*.html",  flatten: "true"}
+    ])
   ]
 };

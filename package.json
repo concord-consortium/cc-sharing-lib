@@ -26,6 +26,7 @@
     "@types/react-dom": "^15.5.4",
     "@types/semver": "^5.3.31",
     "@types/uuid": "^2.0.29",
+    "@types/lodash": "^4.14.74",
     "awesome-typescript-loader": "^3.1.2",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
