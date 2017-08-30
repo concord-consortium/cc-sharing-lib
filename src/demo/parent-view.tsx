@@ -3,19 +3,22 @@ import * as ReactDOM from "react-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import RaisedButton from "material-ui/RaisedButton";
 import TextField from "material-ui/TextField";
+import { PublishableListView } from "./publishable-list-view";
 
 const iframePhone = require("iframe-phone");
 
 import {
   InitMessage,
   SharingParent,
-  IFramePhone } from "../index";
-
+  IFramePhone,
+  Publishable } from "../index";
 
 export interface PhoneTestProps {}
 export interface PhoneTestState {
   url: string;
   connected: boolean;
+  lastMessageType: string;
+  snapshots: Publishable[];
 }
 
 export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestState> {
@@ -27,7 +30,9 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
     super(props);
     this.state = {
       url: "client.html",
-      connected: false
+      connected: false,
+      lastMessageType: "(none)",
+      snapshots: []
     };
   }
 
@@ -53,9 +58,16 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
       requestTime: new Date()
     };
 
-    const receivePub = (data:any) => {
-      console.log("Received pub");
-      console.log(data);
+    const receivePub = (snapshot:Publishable) => {
+      console.log(snapshot);
+      const snapshots = this.state.snapshots;
+      snapshots.push(snapshot);
+      this.setState(
+        {
+          snapshots: snapshots,
+          lastMessageType: "pub"
+        }
+      );
     };
 
     if(this.phone) {
@@ -73,7 +85,8 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
   render() {
     const url = this.state.url;
     const connectionStatus = this.state.connected ? "Connected" : "Disconnected";
-    const lastMessage = "(none)";
+    const lastMessage = this.state.lastMessageType;
+    const snapshots = this.state.snapshots;
     const clickHandler = this.sharePhone ? () => this.sharePhone.sendPublish() :() => console.log("dang");
     return(
       <MuiThemeProvider>
@@ -94,10 +107,7 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
               <span> Phone Status:</span>
               <span> {connectionStatus} </span>
             </div>
-            <div>
-              <span> Last Message Type:</span>
-              <span> {lastMessage} </span>
-            </div>
+            <PublishableListView snapshots={snapshots} />
           </div>
           <iframe ref='iframe' width={400} height={400} src={url}/>
         </div>

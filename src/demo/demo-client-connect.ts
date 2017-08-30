@@ -1,8 +1,8 @@
-import { Representation, SharingClient, SharableApp, IFramePhone, Binary, Jpeg } from "../index";
+import { Representation, SharingClient, SharableApp, IFramePhone, Text, Jpeg } from "../index";
 declare const require:(name:string) => any;
 const iFramePhone = require("iframe-phone");
 
-export const demoClientConnect = function() {
+export const demoClientConnect = function(callback:Function) {
   const phone:IFramePhone = iFramePhone.getIFrameEndpoint();
   phone.initialize();
 
@@ -21,8 +21,8 @@ export const demoClientConnect = function() {
       return new Promise((resolve, reject) => {
         resolve([
           {
-            type: Binary,
-            dataUrl: `http://foo.bar.com/#${dataUrl}`
+            type: Text,
+            dataUrl: callback()
           },
           {
             type: Jpeg,

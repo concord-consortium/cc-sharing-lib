@@ -2,6 +2,7 @@ import { InitMessage } from "./init-message";
 
 export const Jpeg       = {type: "image/jpeg",               extension: "jpg"  };
 export const Csv        = {type: "text/csv",                 extension: "csv"  };
+export const Text       = {type: "text/plain",               extension: "txt"  };
 export const Binary     = {type: "application/octet-stream", extension: "bin"  };
 export const Json       = {type: "application/json",         extension: "json" };
 
