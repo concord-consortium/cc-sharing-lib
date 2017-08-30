@@ -11,3 +11,7 @@ export interface IFramePhone {
   disconnect(): void;
   post(type:MessageType, content:MessageContent): void;
 }
+
+export interface IFramePhoneLib {
+  ParentEndpoint(iframe:HTMLIFrameElement, callback: (args:any) => void):  IFramePhone;
+}

@@ -1,4 +1,8 @@
-import {InitMessageName, Context} from "./init-message";
+import {
+  InitMessageName,
+  InitResponseMessage,
+  InitResponseMessageName,
+  InitMessage} from "./init-message";
 import {
   LaunchApplication,
   Publishable,
@@ -23,10 +27,20 @@ export class SharingClient {
     // For now assume that its ready to add listeners … (TBD)
     this.phone.addListener(
       InitMessageName,
-      (args:Context) =>
-        this.context = args
+      (args:InitMessage) => {
+        this.context = args;
+        this.sendInitResponse();
+      }
     );
     this.phone.addListener(PublishMessageName, (args:any) => this.sendPublish());
+  }
+
+  sendInitResponse() {
+    const initResponse:InitResponseMessage = {
+      localId: this.context.localId,
+      Application: this.app.application
+    };
+    this.phone.post(InitResponseMessageName, initResponse);
   }
 
   sendPublish() {

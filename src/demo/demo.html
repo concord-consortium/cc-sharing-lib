@@ -4,6 +4,14 @@
     <meta charset="utf-8">
     <title>cc-sharing demo</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <script>
+
+      const listener = (evt) => {
+        console.log("dom node insterted");
+        console.log(evt);
+      }
+      document.addEventListener("DOMSubtreeModified", listener, false);
+    </script>
     <style>
       body{
         font-family: Arial, Helvetica, sans-serif;

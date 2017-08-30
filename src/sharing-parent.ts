@@ -1,10 +1,18 @@
-import {InitMessageName, Context} from "./init-message";
+import {
+  InitMessageName,
+  InitMessage,
+  InitResponseMessageName,
+  InitResponseMessage
+} from "./init-message";
+
 import {
   LaunchApplication,
   Publishable,
   PublishMessageName,
   PublishResponseMessageName,
   Representation} from "./publishable";
+
+import { v1 as uuid} from "uuid";
 
 import {IFramePhone} from "./iframe-phone";
 export type PublishResultsCallback = (p:Publishable) => void;
@@ -18,7 +26,8 @@ export class SharingParent {
     this.context = context;
     this.adjustContext();
     this.phone.addListener(PublishResponseMessageName, callback);
-    this.phone.post(InitMessageName,this.context);
+    this.phone.addListener(InitResponseMessageName, this.initReceipt.bind(this));
+    this.phone.post(InitMessageName, this.context);
   }
 
   version() {
@@ -34,10 +43,24 @@ export class SharingParent {
       : new Date().toISOString();
 
     this.context.localId = "demo";  // TBD make a uuid or something.
+      : new Date();
+    this.context.localId = this.context.localId
+      ? this.context.localId
+      : uuid();
   }
-
 
   sendPublish() {
     this.phone.post(PublishMessageName, {});
+  }
+
+  initReceipt(ack:InitResponseMessage) {
+    this.log("init received:");
+    this.log(ack);
+  }
+
+  log(message:string|object) {
+    if(console && console.log) {
+      console.log(message);
+    }
   }
 }
