@@ -13,7 +13,7 @@
     "clean": "shx rm -rf _bundles lib lib-esm",
     "build": "npm run clean && tsc && tsc -m es6 --outDir lib-esm && webpack"
   },
-  "author": "npaessel@concord.org",
+  "author": "Noah Paessel npaessel@concord.org",
   "license": "MIT",
   "dependencies": {
     "iframe-phone": "^1.2.0",
