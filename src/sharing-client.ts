@@ -1,4 +1,4 @@
-import {InitMessageName, InitMessage} from "./init-message";
+import {InitMessageName, Context} from "./init-message";
 import {
   LaunchApplication,
   Publishable,
@@ -9,12 +9,12 @@ import { IFramePhone } from "./iframe-phone";
 
 export interface SharableApp {
   application: LaunchApplication;
-  getDataFunc(context:InitMessage): Promise<Representation[]>;
+  getDataFunc(context:Context): Promise<Representation[]>;
 }
 
 export class SharingClient {
   phone: IFramePhone;
-  context: InitMessage;
+  context: Context;
   app: SharableApp;
 
   constructor(phone:IFramePhone, app:SharableApp) {
@@ -23,7 +23,7 @@ export class SharingClient {
     // For now assume that its ready to add listeners … (TBD)
     this.phone.addListener(
       InitMessageName,
-      (args:InitMessage) =>
+      (args:Context) =>
         this.context = args
     );
     this.phone.addListener(PublishMessageName, (args:any) => this.sendPublish());
@@ -34,11 +34,17 @@ export class SharingClient {
     promise.then((representations) => {
       const publishContent:Publishable = {
         context: this.context,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         application: this.app.application,
-        representations: representations
+        representations: representations,
+        children: []
       };
       this.phone.post(PublishResponseMessageName, publishContent);
     });
+  }
+
+  // TBD: We will need to create and manage the promise ourselves.
+  cancelPublish() {
+
   }
 }

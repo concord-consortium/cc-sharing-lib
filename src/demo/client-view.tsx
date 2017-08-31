@@ -25,7 +25,7 @@ export class ClientView extends React.Component<ClientViewProps, ClientViewState
 
   componentDidMount() {
     demoClientConnect(()=> {
-      return this.state.message
+      return this.state.message;
     });
   }
 

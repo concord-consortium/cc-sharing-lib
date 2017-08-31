@@ -1,4 +1,4 @@
-import {InitMessageName, InitMessage} from "./init-message";
+import {InitMessageName, Context} from "./init-message";
 import {
   LaunchApplication,
   Publishable,
@@ -11,9 +11,9 @@ export type PublishResultsCallback = (p:Publishable) => void;
 
 export class SharingParent {
   phone: IFramePhone;
-  context: InitMessage;
+  context: Context;
 
-  constructor(phone:IFramePhone, context: InitMessage, callback:PublishResultsCallback) {
+  constructor(phone:IFramePhone, context: Context, callback:PublishResultsCallback) {
     this.phone = phone;
     this.context = context;
     this.adjustContext();
@@ -31,7 +31,7 @@ export class SharingParent {
       : this.version();
     this.context.requestTime = this.context.requestTime
       ? this.context.requestTime
-      : new Date();
+      : new Date().toISOString();
 
     this.context.localId = "demo";  // TBD make a uuid or something.
   }

@@ -16,7 +16,7 @@ export const demoClientConnect = function(callback:Function) {
     // data Represenations.
     getDataFunc: (context) => {
       // 1. Construct a unique url from the sharing context:
-      const dataUrl = `${context.groupId.id}-${context.offeringId.id}-${context.userId.id}`;
+      const dataUrl = `${context.group.id}-${context.offering.id}-${context.user.id}`;
       // 2. The promise constructs a list of data Represnetations:
       return new Promise((resolve, reject) => {
         resolve([

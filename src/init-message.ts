@@ -1,6 +1,9 @@
+
 export type Identifier       = string | number;
 export type ProtocolVersion  = string;
+export type ISODateString = string;
 export const InitMessageName = "SharinatorInit";
+
 
 export interface User {
   displayName: string;
@@ -17,11 +20,19 @@ export interface Offering {
   id: Identifier;
 }
 
-export interface InitMessage {
+export interface Clazz {
+  displayName: string;
+  id: Identifier;
+}
+
+
+export interface Context {
   protocolVersion: ProtocolVersion;
-  requestTime: Date;
-  userId: User;
-  groupId: Group;
-  offeringId: Offering;
+  id: Identifier;
+  requestTime: ISODateString;
+  user: User;
+  group: Group;
+  offering: Offering;
+  clazz: Clazz;
   localId: Identifier;
 }

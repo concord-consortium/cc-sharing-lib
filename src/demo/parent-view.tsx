@@ -6,9 +6,10 @@ import TextField from "material-ui/TextField";
 import { PublishableListView } from "./publishable-list-view";
 
 const iframePhone = require("iframe-phone");
+const uuid = require("uuid");
 
 import {
-  InitMessage,
+  Context,
   SharingParent,
   IFramePhone,
   Publishable } from "../index";
@@ -49,13 +50,15 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
   }
 
   setupPhone() {
-    const context:InitMessage = {
+    const context:Context = {
       protocolVersion: "1.0.0",
-      userId: {displayName: "noah", id:"1"},
-      groupId: {displayName: "noahs group", id:"1"},
-      offeringId: {displayName: "offering_id", id: "1"},
+      user: {displayName: "noah", id:"1"},
+      id: uuid.v1(),
+      group: {displayName: "noahs group", id:"1"},
+      offering: {displayName: "offering_id", id: "1"},
+      clazz:  {displayName: "clazz_id", id: "1"},
       localId: "x",
-      requestTime: new Date()
+      requestTime: new Date().toISOString()
     };
 
     const receivePub = (snapshot:Publishable) => {

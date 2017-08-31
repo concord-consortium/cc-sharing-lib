@@ -1,4 +1,4 @@
-import { InitMessage } from "./init-message";
+import { Context, ISODateString } from "./init-message";
 
 export const Jpeg       = {type: "image/jpeg",               extension: "jpg"  };
 export const Csv        = {type: "text/csv",                 extension: "csv"  };
@@ -6,13 +6,15 @@ export const Text       = {type: "text/plain",               extension: "txt"  }
 export const Binary     = {type: "application/octet-stream", extension: "bin"  };
 export const Json       = {type: "application/json",         extension: "json" };
 
-export type Url         = string;
+export type Url           = string;
+
 
 export type RepresentationType = {type:string, extension:string};
 
 export interface Representation {
   type: RepresentationType;
   dataUrl: Url;
+  name?: string;
 }
 
 export interface LaunchApplication {
@@ -24,8 +26,9 @@ export const PublishMessageName = "SharinatorPublish";
 export const PublishResponseMessageName = "SharinatorPublishResponse";
 
 export interface Publishable {
-  context: InitMessage;
-  createdAt: Date;
+  context: Context;
+  createdAt: ISODateString;
   application: LaunchApplication;
   representations: Representation[];
+  children: Publishable[];
 }
