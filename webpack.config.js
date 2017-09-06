@@ -9,7 +9,8 @@ module.exports = {
     'sharing-lib': ["./src/index.ts"],
     'sharing-lib.min': ["./src/index.ts"],
     'parent-demo': ["./src/demo/parent-view.tsx"],
-    'client-demo': ["./src/demo/client-view.tsx"]
+    'client-demo': ["./src/demo/client-view.tsx"],
+    'iframe-demo': ["./src/demo/iframe-demo.ts"]
   },
 
   output: {

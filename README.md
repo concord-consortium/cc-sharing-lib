@@ -22,6 +22,38 @@ There are only 3 message types defined:
 2. Compile `npm run build`
 
 
+## Using this library
+All of this subject to change out of the blue. As of 2017-09-06 the easiest / best thing to do
+is something like this:
+
+```
+    const app:SharableApp = {
+        // Describe the application:
+        application: {
+            launchUrl: "http://127.0.0.1:8080/src/demo/iframe.html",
+            name: "demo iframe app"
+        },
+
+        getDataFunc: (context) => {
+            // 1. Construct a unique url from the sharing context:
+            const dataUrl = `${context.group.id}-${context.offering.id}-${context.user.id}`;
+            // 2. The promise constructs a list of data Represnetations:
+            return new Promise((resolve, reject) => {
+                resolve([
+                {
+                    type: Text,
+                    dataUrl: `this is the iframe response at ${new Date()}`
+                }
+                ]);
+            });
+        }
+    };
+
+    // Pass in an existing phone as first arg if you want to reuse it.
+    const sharePhone = new SharingRelay(null, app);
+
+```
+
 ## Running the demo & tester app ##
 
 You can view an [online demo](http://sharing-demo.concord.org/branch/master/demo.html).

@@ -8,7 +8,6 @@ export const Json       = {type: "application/json",         extension: "json" }
 
 export type Url           = string;
 
-
 export type RepresentationType = {type:string, extension:string};
 
 export interface Representation {
@@ -23,12 +22,14 @@ export interface LaunchApplication {
 }
 
 export const PublishMessageName = "SharinatorPublish";
-export const PublishResponseMessageName = "SharinatorPublishResponse";
+export const PublishMessage = { send: true }; // TBD
 
-export interface Publishable {
+export const PublishResponseMessageName = "SharinatorPublishResponse";
+// TODO: Rename this to PublishResponse?
+export interface PublishResponse {
   context: Context;
   createdAt: ISODateString;
   application: LaunchApplication;
   representations: Representation[];
-  children: Publishable[];
+  children: PublishResponse[];
 }

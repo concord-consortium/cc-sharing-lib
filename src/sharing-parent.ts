@@ -1,29 +1,38 @@
 import {
   InitMessageName,
-  InitMessage,
+  Context,
   InitResponseMessageName,
   InitResponseMessage
 } from "./init-message";
 
 import {
   LaunchApplication,
-  Publishable,
+  PublishResponse,
   PublishMessageName,
+  PublishMessage,
   PublishResponseMessageName,
   Representation} from "./publishable";
 
+import { IFramePhoneDown } from "./iframe-phone";
+
 import { v1 as uuid} from "uuid";
 
-import {IFramePhone} from "./iframe-phone";
-export type PublishResultsCallback = (p:Publishable) => void;
 
+export type PublishResultsCallback = (p:PublishResponse) => void;
+export type InitResponseCallback = (initRepy: InitResponseMessage) => void;
 export class SharingParent {
-  phone: IFramePhone;
+  phone: IFramePhoneDown;
   context: Context;
+  initCallback?: InitResponseCallback;
 
-  constructor(phone:IFramePhone, context: Context, callback:PublishResultsCallback) {
+constructor(
+  phone:IFramePhoneDown,
+  context: Context,
+  callback:PublishResultsCallback,
+  initCallback?: InitResponseCallback) {
     this.phone = phone;
     this.context = context;
+    this.initCallback = initCallback;
     this.adjustContext();
     this.phone.addListener(PublishResponseMessageName, callback);
     this.phone.addListener(InitResponseMessageName, this.initReceipt.bind(this));
@@ -41,21 +50,21 @@ export class SharingParent {
     this.context.requestTime = this.context.requestTime
       ? this.context.requestTime
       : new Date().toISOString();
-
-    this.context.localId = "demo";  // TBD make a uuid or something.
-      : new Date();
     this.context.localId = this.context.localId
       ? this.context.localId
       : uuid();
   }
 
   sendPublish() {
-    this.phone.post(PublishMessageName, {});
+    this.phone.post(PublishMessageName, PublishMessage);
   }
 
   initReceipt(ack:InitResponseMessage) {
     this.log("init received:");
     this.log(ack);
+    if (this.initCallback) {
+      this.initCallback(ack);
+    }
   }
 
   log(message:string|object) {

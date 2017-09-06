@@ -1,16 +1,13 @@
-import { Representation, SharingClient, SharableApp, IFramePhoneUp, Text, Jpeg } from "../index";
+import { Representation, SharingRelay, SharableApp, IFramePhoneUp, Text, Jpeg } from "../index";
 declare const require:(name:string) => any;
 const iFramePhone = require("iframe-phone");
 
-export const demoClientConnect = function(callback:Function) {
-  const phone:IFramePhoneUp = iFramePhone.getIFrameEndpoint();
-  phone.initialize();
-
+export const iframeConnect = function() {
   const app:SharableApp = {
     // Describe the application:
     application: {
-      launchUrl: "http://127.0.0.1:8080/src/demo/client.html",
-      name: "demo app"
+      launchUrl: "http://127.0.0.1:8080/src/demo/iframe.html",
+      name: "demo iframe app"
     },
     // Provide a callback that returns a promise that resolves to a list of
     // data Represenations.
@@ -22,15 +19,12 @@ export const demoClientConnect = function(callback:Function) {
         resolve([
           {
             type: Text,
-            dataUrl: callback()
-          },
-          {
-            type: Jpeg,
-            dataUrl: `http://foo.bar.com/#${dataUrl}.jpg`
+            dataUrl: `this is the iframe response at ${new Date()}`
           }
         ]);
       });
     }
   };
-  const sharePhone = new SharingClient(phone, app);
+  const sharePhone = new SharingRelay(null, app);
 };
+iframeConnect();

@@ -11,20 +11,20 @@ const uuid = require("uuid");
 import {
   Context,
   SharingParent,
-  IFramePhone,
-  Publishable } from "../index";
+  IFramePhoneDown,
+  PublishResponse } from "../index";
 
 export interface PhoneTestProps {}
 export interface PhoneTestState {
   url: string;
   connected: boolean;
   lastMessageType: string;
-  snapshots: Publishable[];
+  snapshots: PublishResponse[];
 }
 
 export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestState> {
   public state:PhoneTestState;
-  phone: IFramePhone;
+  phone: IFramePhoneDown;
   sharePhone: SharingParent;
 
   constructor(props:PhoneTestProps){
@@ -61,7 +61,7 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
       requestTime: new Date().toISOString()
     };
 
-    const receivePub = (snapshot:Publishable) => {
+    const receivePub = (snapshot:PublishResponse) => {
       console.log(snapshot);
       const snapshots = this.state.snapshots;
       snapshots.push(snapshot);
@@ -90,7 +90,9 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
     const connectionStatus = this.state.connected ? "Connected" : "Disconnected";
     const lastMessage = this.state.lastMessageType;
     const snapshots = this.state.snapshots;
-    const clickHandler = this.sharePhone ? () => this.sharePhone.sendPublish() :() => console.log("dang");
+    const clickHandler = this.sharePhone
+      ? () => this.sharePhone.sendPublish()
+      : () => console.error("unable to publish");
     return(
       <MuiThemeProvider>
         <div className="container">

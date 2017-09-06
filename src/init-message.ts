@@ -2,6 +2,7 @@ import { LaunchApplication } from "./publishable";
 
 export type Identifier       = string | number;
 export type ProtocolVersion  = string;
+export type ISODateString    = string;
 
 export const InitMessageName = "SharinatorInit";
 export const InitResponseMessageName = "SharinitorInitResponse";
@@ -25,14 +26,13 @@ export interface Clazz {
   id: Identifier;
 }
 
-
-export interface Context {
 export interface InitResponseMessage {
+  id: Identifier;
   localId: Identifier;
   Application: LaunchApplication;
 }
 
-export interface InitMessage {
+export interface Context {
   protocolVersion: ProtocolVersion;
   id: Identifier;
   requestTime: ISODateString;

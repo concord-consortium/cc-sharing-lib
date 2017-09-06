@@ -2,14 +2,16 @@ import {
   InitMessageName,
   InitResponseMessage,
   InitResponseMessageName,
-  InitMessage} from "./init-message";
+  Context} from "./init-message";
 import {
   LaunchApplication,
-  Publishable,
+  PublishResponse,
   PublishMessageName,
   PublishResponseMessageName,
   Representation} from "./publishable";
-import { IFramePhone } from "./iframe-phone";
+
+import { IFramePhoneUp, IFramePhoneFactory } from "./iframe-phone";
+
 
 export interface SharableApp {
   application: LaunchApplication;
@@ -17,41 +19,62 @@ export interface SharableApp {
 }
 
 export class SharingClient {
-  phone: IFramePhone;
+  phone: IFramePhoneUp;
   context: Context;
   app: SharableApp;
 
-  constructor(phone:IFramePhone, app:SharableApp) {
-    this.phone = phone;
+  constructor(phone:IFramePhoneUp|null, app:SharableApp) {
+    if(phone !== null) {
+      this.phone = phone;
+    }
+    else {
+      console.log("Creating iframe phone");
+      this.phone = IFramePhoneFactory.getIFrameEndpoint();
+      this.phone.initialize();
+    }
     this.app = app;
     // For now assume that its ready to add listeners … (TBD)
     this.phone.addListener(
       InitMessageName,
-      (args:InitMessage) => {
+      (args:Context) => {
         this.context = args;
-        this.sendInitResponse();
+        this.handleInitMessage(args);
       }
     );
-    this.phone.addListener(PublishMessageName, (args:any) => this.sendPublish());
+
+    this.phone.addListener(
+      PublishMessageName,
+      (args:any) => this.handlePublishMessage()
+    );
   }
 
-  sendInitResponse() {
+  handleInitMessage(args:Context) {
+    this.sendInitResponse(args);
+  }
+
+  handlePublishMessage() {
+    this.sendPublishResponse();
+  }
+
+  sendInitResponse(args:Context) {
     const initResponse:InitResponseMessage = {
       localId: this.context.localId,
+      id: this.context.id,
       Application: this.app.application
     };
+    console.log("sending init response");
     this.phone.post(InitResponseMessageName, initResponse);
   }
 
-  sendPublish() {
+  sendPublishResponse(children:PublishResponse[]=[]) {
     const promise = this.app.getDataFunc(this.context);
-    promise.then((representations) => {
-      const publishContent:Publishable = {
+    return promise.then((representations) => {
+      const publishContent:PublishResponse = {
         context: this.context,
         createdAt: new Date().toISOString(),
         application: this.app.application,
         representations: representations,
-        children: []
+        children: children
       };
       this.phone.post(PublishResponseMessageName, publishContent);
     });
