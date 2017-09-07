@@ -38,16 +38,26 @@ export class SharingRelay extends SharingClient {
     this.connectedChildren = [];
   }
 
-  childFrames() {
-    return(document.getElementsByTagName('iframe'));
+  initializeAsTop(context:Context){
+    this.setContext(context);
+    this.connectAllChildren();
   }
 
-  disconnectAllChildren() {
+  childFrames() {
+    const frames = document.getElementsByTagName('iframe');
+    return(frames);
+  }
+
+  disconnect() {
     _.each(this.connectedChildren, (c) => {
+      c.disconnect();
+    });
+    _.each(this.calledChildren, (c) => {
       c.disconnect();
     });
     this.calledChildren = [];
     this.connectedChildren = [];
+    super.disconnect();
   }
 
   connectAllChildren() {
@@ -94,6 +104,5 @@ export class SharingRelay extends SharingClient {
       });
     });
     Promise.all(promises).then( () => this.sendPublishResponse(this.childResponses));
-    super.handlePublishMessage();
   }
 }

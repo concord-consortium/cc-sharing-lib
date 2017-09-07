@@ -40,7 +40,6 @@ export class PublishableListView extends React.Component<PublishableListViewProp
   renderChild(child: PublishResponse) {
     const name:string = child.application.name;
     const url:string  = child.application.launchUrl;
-
     return(
       <div style={{marginRight:"1em", marginLeft:"1em"}}>
         <div> <a href={url} target="_blank">{name}</a></div>
@@ -53,11 +52,17 @@ export class PublishableListView extends React.Component<PublishableListViewProp
     const time:string = moment(snapshot.createdAt).calendar();
     const name:string = snapshot.application.name;
     const url:string  = snapshot.application.launchUrl;
+    const flattenKids = (snap:PublishResponse, _kids:PublishResponse[]) => {
+      _.each(snap.children, (c) => flattenKids(c, _kids));
+      _kids.push(snap);
+    };
+    const kids:PublishResponse[] = [];
+    flattenKids(snapshot, kids);
     const component:JSX.Element=
       <div className="representation">
         <div> <span>{time}</span> <a href={url} target="_blank">{name}</a></div>
         { _.map(snapshot.representations, (rep:Representation) => this.renderRep(rep)) }
-        { _.map(snapshot.children, (child:PublishResponse) => this.renderChild(child)) }
+        { _.map(kids, (child) => this.renderChild(child)) }
       </div>;
     return component;
   }

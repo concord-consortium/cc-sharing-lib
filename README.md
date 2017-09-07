@@ -27,6 +27,17 @@ All of this subject to change out of the blue. As of 2017-09-06 the easiest / be
 is something like this:
 
 ```
+    const context:Context = {
+        protocolVersion: "1.0.0",
+        user: {displayName: "noah", id:"1"},
+        id: uuid.v1(),
+        group: {displayName: "noahs group", id:"1"},
+        offering: {displayName: "offering_id", id: "1"},
+        clazz:  {displayName: "clazz_id", id: "1"},
+        localId: "x",
+        requestTime: new Date().toISOString()
+    };
+
     const app:SharableApp = {
         // Describe the application:
         application: {
@@ -50,7 +61,10 @@ is something like this:
     };
 
     // Pass in an existing phone as first arg if you want to reuse it.
-    const sharePhone = new SharingRelay(null, app);
+    sharing = new SharingRelay({app:app});
+    const receivePub = (snapshot:PublishResponse) => console.log(snapshot);
+    sharing.addPublicationListener({newPublication: receivePub});
+    sharing.initializeAsTop(context);
 
 ```
 

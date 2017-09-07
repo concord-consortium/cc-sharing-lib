@@ -6,7 +6,7 @@ import TextField from "material-ui/TextField";
 
 const iframePhone = require("iframe-phone");
 import { demoClientConnect } from "./demo-client-connect";
-
+import { SharingRelay } from "../sharing-relay";
 
 export interface ClientViewProps {}
 export interface ClientViewState {
@@ -15,6 +15,7 @@ export interface ClientViewState {
 
 export class ClientView extends React.Component<ClientViewProps, ClientViewState> {
   public state:ClientViewState;
+  shareClient: SharingRelay;
 
   constructor(props:ClientViewProps){
     super(props);
@@ -23,8 +24,8 @@ export class ClientView extends React.Component<ClientViewProps, ClientViewState
     };
   }
 
-  componentDidMount() {
-    demoClientConnect(()=> {
+  componentWillMount() {
+    this.shareClient = demoClientConnect(()=> {
       return this.state.message;
     });
   }

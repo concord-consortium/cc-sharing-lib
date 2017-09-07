@@ -1,11 +1,6 @@
-import { Representation, SharingClient, SharableApp, IFramePhoneUp, Text, Jpeg } from "../index";
-declare const require:(name:string) => any;
-const iFramePhone = require("iframe-phone");
+import { Representation, SharingRelay, SharableApp, IFramePhoneUp, Text, Jpeg } from "../index";
 
 export const demoClientConnect = function(callback:Function) {
-  const phone:IFramePhoneUp = iFramePhone.getIFrameEndpoint();
-  phone.initialize();
-
   const app:SharableApp = {
     // Describe the application:
     application: {
@@ -32,5 +27,5 @@ export const demoClientConnect = function(callback:Function) {
       });
     }
   };
-  const sharePhone = new SharingClient({app: app});
+  return new SharingRelay({app: app});
 };

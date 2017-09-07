@@ -10,7 +10,9 @@ const uuid = require("uuid");
 
 import {
   Context,
-  SharingParent,
+  SharingRelay,
+  SharableApp,
+  Text,
   IFramePhoneDown,
   PublishResponse } from "../index";
 
@@ -25,7 +27,7 @@ export interface PhoneTestState {
 export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestState> {
   public state:PhoneTestState;
   phone: IFramePhoneDown;
-  shareParent: SharingParent;
+  sharing: SharingRelay;
 
   constructor(props:PhoneTestProps){
     super(props);
@@ -37,19 +39,25 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.setupPhone();
   }
 
-  componentDidUpdate(prevProps:PhoneTestProps,prevState:PhoneTestState) {
+  componentWillUpdate(prevProps:PhoneTestProps,prevState:PhoneTestState) {
     const lastUrl = prevState.url;
     const thisUrl = this.state.url;
     if(lastUrl !== thisUrl) {
       this.setupPhone();
     }
+    if(!this.sharing) {
+      this.setupPhone();
+    }
   }
 
   setupPhone() {
+    if(this.sharing) {
+      this.sharing.disconnect();
+    }
     const context:Context = {
       protocolVersion: "1.0.0",
       user: {displayName: "noah", id:"1"},
@@ -73,14 +81,22 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
       );
     };
 
-    if(this.phone) {
-      this.phone.disconnect();
+    if(this.sharing) {
+      this.sharing.disconnect();
     }
-    this.phone = iframePhone.ParentEndpoint(this.refs.iframe, this.connectionComplete.bind(this));
-    this.shareParent = new SharingParent({
-      callback:receivePub,
-      context:context,
-      phone:this.phone});
+    this.sharing = new SharingRelay({
+      // context:context,
+      app: {
+        application: {
+          launchUrl: `${window.location}`,
+          name: "Demo Parent"},
+          getDataFunc: (context) => new Promise(
+            (resolve, reject) => resolve([{dataUrl:"(nothing)",name:"nada",type:Text}])
+          )
+        }
+    });
+    this.sharing.addPublicationListener({newPublication: receivePub});
+    this.sharing.initializeAsTop(context);
     console.log('setupPhone done');
   }
 
@@ -93,9 +109,7 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
     const connectionStatus = this.state.connected ? "Connected" : "Disconnected";
     const lastMessage = this.state.lastMessageType;
     const snapshots = this.state.snapshots;
-    const clickHandler = this.shareParent
-      ? () => this.shareParent.sendPublish()
-      : () => console.error("unable to publish");
+    const clickHandler = () => this.sharing.handlePublishMessage();
     return(
       <MuiThemeProvider>
         <div className="container">
