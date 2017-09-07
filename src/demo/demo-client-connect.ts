@@ -32,5 +32,5 @@ export const demoClientConnect = function(callback:Function) {
       });
     }
   };
-  const sharePhone = new SharingClient(phone, app);
+  const sharePhone = new SharingClient({app: app});
 };

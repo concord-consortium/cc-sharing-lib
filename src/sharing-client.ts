@@ -18,21 +18,25 @@ export interface SharableApp {
   getDataFunc(context:Context): Promise<Representation[]>;
 }
 
+export interface SharingClientParams {
+  phone?: IFramePhoneUp;
+  app: SharableApp;
+}
+
 export class SharingClient {
   phone: IFramePhoneUp;
   context: Context;
   app: SharableApp;
 
-  constructor(phone:IFramePhoneUp|null, app:SharableApp) {
-    if(phone !== null) {
-      this.phone = phone;
+  constructor(params:SharingClientParams) {
+    if(params.phone) {
+      this.phone = params.phone;
     }
     else {
-      console.log("Creating iframe phone");
       this.phone = IFramePhoneFactory.getIFrameEndpoint();
       this.phone.initialize();
     }
-    this.app = app;
+    this.app = params.app;
     // For now assume that its ready to add listeners … (TBD)
     this.phone.addListener(
       InitMessageName,

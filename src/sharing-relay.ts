@@ -3,6 +3,7 @@ import {
   IFramePhoneUp,
   IFramePhoneFactory,
   SharingClient,
+  SharingClientParams,
   SharingParent,
   Context,
   PublishResponse,
@@ -21,6 +22,7 @@ export interface SimplePromise {
 export interface PromiseRecord {
   [key:string]: SimplePromise;
 }
+
 export class SharingRelay extends SharingClient {
   calledChildren: ChildConnection[];
   connectedChildren: ChildConnection[];
@@ -28,8 +30,8 @@ export class SharingRelay extends SharingClient {
   childResponses: PublishResponse[];
   promiseRecords:  PromiseRecord;
 
-  constructor(phone:IFramePhoneUp|null, app:SharableApp){
-    super(phone, app);
+  constructor(params:SharingClientParams){
+    super(params);
     this.childResponses = [];
     this.promiseRecords = {};
     this.calledChildren = [];
@@ -64,7 +66,12 @@ export class SharingRelay extends SharingClient {
         this.connectedChildren.push(child);
       }
     };
-    const child = new ChildConnection(this.context, iframe, this.collectResponse.bind(this), initCallback.bind(this));
+    const child = new ChildConnection({
+      context: this.context,
+      iframe: iframe,
+      publishResponseCallback: this.collectResponse.bind(this),
+      initCallback: initCallback.bind(this)
+    });
     this.calledChildren.push(child);
   }
 

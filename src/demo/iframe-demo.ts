@@ -25,6 +25,6 @@ export const iframeConnect = function() {
       });
     }
   };
-  const sharePhone = new SharingRelay(null, app);
+  const sharePhone = new SharingRelay({app:app});
 };
 iframeConnect();

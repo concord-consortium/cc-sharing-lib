@@ -19,22 +19,26 @@ import { v1 as uuid} from "uuid";
 
 
 export type PublishResultsCallback = (p:PublishResponse) => void;
-export type InitResponseCallback = (initRepy: InitResponseMessage) => void;
+export type InitResponseCallback = (initReply: InitResponseMessage) => void;
+
+export interface SharingParentParams {
+  phone:IFramePhoneDown;
+  context: Context;
+  callback:PublishResultsCallback;
+  initCallback?: InitResponseCallback;
+}
+
 export class SharingParent {
   phone: IFramePhoneDown;
   context: Context;
   initCallback?: InitResponseCallback;
 
-constructor(
-  phone:IFramePhoneDown,
-  context: Context,
-  callback:PublishResultsCallback,
-  initCallback?: InitResponseCallback) {
-    this.phone = phone;
-    this.context = context;
-    this.initCallback = initCallback;
+constructor(params:SharingParentParams) {
+    this.phone = params.phone;
+    this.context = params.context;
+    this.initCallback = params.initCallback;
     this.adjustContext();
-    this.phone.addListener(PublishResponseMessageName, callback);
+    this.phone.addListener(PublishResponseMessageName, params.callback);
     this.phone.addListener(InitResponseMessageName, this.initReceipt.bind(this));
     this.phone.post(InitMessageName, this.context);
   }

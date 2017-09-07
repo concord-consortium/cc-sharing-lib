@@ -25,7 +25,7 @@ export interface PhoneTestState {
 export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestState> {
   public state:PhoneTestState;
   phone: IFramePhoneDown;
-  sharePhone: SharingParent;
+  shareParent: SharingParent;
 
   constructor(props:PhoneTestProps){
     super(props);
@@ -77,7 +77,10 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
       this.phone.disconnect();
     }
     this.phone = iframePhone.ParentEndpoint(this.refs.iframe, this.connectionComplete.bind(this));
-    this.sharePhone = new SharingParent(this.phone, context, receivePub);
+    this.shareParent = new SharingParent({
+      callback:receivePub,
+      context:context,
+      phone:this.phone});
     console.log('setupPhone done');
   }
 
@@ -90,8 +93,8 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
     const connectionStatus = this.state.connected ? "Connected" : "Disconnected";
     const lastMessage = this.state.lastMessageType;
     const snapshots = this.state.snapshots;
-    const clickHandler = this.sharePhone
-      ? () => this.sharePhone.sendPublish()
+    const clickHandler = this.shareParent
+      ? () => this.shareParent.sendPublish()
       : () => console.error("unable to publish");
     return(
       <MuiThemeProvider>
