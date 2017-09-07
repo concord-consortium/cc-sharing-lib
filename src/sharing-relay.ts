@@ -43,10 +43,11 @@ export class SharingRelay extends SharingClient {
   }
 
   disconnectAllChildren() {
-    _.each(this.calledChildren, (c) => {
+    _.each(this.connectedChildren, (c) => {
       c.disconnect();
     });
     this.calledChildren = [];
+    this.connectedChildren = [];
   }
 
   connectAllChildren() {
