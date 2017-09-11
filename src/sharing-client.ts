@@ -2,25 +2,18 @@ import {
   InitMessageName,
   InitResponseMessage,
   InitResponseMessageName,
-  Context} from "./init-message";
-import {
+  Context,
   LaunchApplication,
   PublishResponse,
   PublishMessageName,
   PublishResponseMessageName,
-  Representation} from "./publishable";
+  Representation,
+  SharableApp,
+  PublicationListener
+} from "./types";
 
 import { IFramePhoneUp, IFramePhoneFactory } from "./iframe-phone";
 import * as _ from "lodash";
-
-export interface PublicationListener {
-  newPublication: (publivation: PublishResponse) => void;
-}
-
-export interface SharableApp {
-  application: LaunchApplication;
-  getDataFunc(context:Context): Promise<Representation[]>;
-}
 
 export interface SharingClientParams {
   phone?: IFramePhoneUp;
@@ -86,9 +79,9 @@ export class SharingClient {
       id: this.context.id,
       Application: this.app.application
     };
-    console.log("sending init response");
     this.phone.post(InitResponseMessageName, initResponse);
   }
+
 
   sendPublishResponse(children:PublishResponse[]=[]) {
     const promise = this.app.getDataFunc(this.context);
@@ -105,8 +98,13 @@ export class SharingClient {
     });
   }
 
+  // TODO: Rename this, and add initialization handling method too.
   notifyPublicationListeners(publishContent: PublishResponse) {
-    _.each(this.publicationListeners, (l) => l.newPublication(publishContent));
+    _.each(this.publicationListeners, (l) => {
+      if(l.newPublication) {
+        l.newPublication(publishContent);
+      }
+    });
   }
 
   // TBD: We will need to create and manage the promise ourselves.

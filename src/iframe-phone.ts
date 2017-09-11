@@ -26,7 +26,7 @@ export const IFramePhoneFactory:IFramePhoneLib = require("iframe-phone");
 
 export interface IFramePhoneLib {
   // SEE: https://github.com/concord-consortium/iframe-phone/blob/master/lib/parent-endpoint.js
-  ParentEndpoint(iframe:HTMLIFrameElement, afterConnectedCallback: (args:any) => void):  IFramePhoneDown;
+  ParentEndpoint(iframe:HTMLIFrameElement, afterConnectedCallback?: (args:any) => void):  IFramePhoneDown;
   // SEE: https://github.com/concord-consortium/iframe-phone/blob/master/lib/iframe-endpoint.js
   getIFrameEndpoint: () => IFramePhoneUp;
 }

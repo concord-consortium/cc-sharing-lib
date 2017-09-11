@@ -2,16 +2,14 @@ import {
   InitMessageName,
   Context,
   InitResponseMessageName,
-  InitResponseMessage
-} from "./init-message";
-
-import {
+  InitResponseMessage,
   LaunchApplication,
   PublishResponse,
   PublishMessageName,
   PublishMessage,
   PublishResponseMessageName,
-  Representation} from "./publishable";
+  Representation
+} from "./types";
 
 import { IFramePhoneDown } from "./iframe-phone";
 
@@ -19,19 +17,18 @@ import { v1 as uuid} from "uuid";
 
 
 export type PublishResultsCallback = (p:PublishResponse) => void;
-export type InitResponseCallback = (initReply: InitResponseMessage) => void;
 
 export interface SharingParentParams {
   phone:IFramePhoneDown;
   context: Context;
   callback:PublishResultsCallback;
-  initCallback?: InitResponseCallback;
+  initCallback?(msg: InitResponseMessage): void;
 }
 
 export class SharingParent {
   phone: IFramePhoneDown;
   context: Context;
-  initCallback?: InitResponseCallback;
+  initCallback?(msg: InitResponseMessage): void;
 
 constructor(params:SharingParentParams) {
     this.phone = params.phone;
@@ -64,16 +61,9 @@ constructor(params:SharingParentParams) {
   }
 
   initReceipt(ack:InitResponseMessage) {
-    this.log("init received:");
-    this.log(ack);
     if (this.initCallback) {
       this.initCallback(ack);
     }
   }
 
-  log(message:string|object) {
-    if(console && console.log) {
-      console.log(message);
-    }
-  }
 }

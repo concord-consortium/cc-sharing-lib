@@ -1,4 +1,11 @@
-import { Representation, SharingRelay, SharableApp, IFramePhoneUp, Text, Jpeg } from "../index";
+import {
+  Representation,
+  SharableApp,
+  Text,
+  Jpeg,
+ } from "../types";
+import { IFramePhoneUp } from "../iframe-phone";
+import { SharingRelay  } from "../sharing-relay";
 
 export const demoClientConnect = function(callback:Function) {
   const app:SharableApp = {

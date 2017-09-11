@@ -40,21 +40,21 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
   }
 
   componentWillMount() {
-    this.setupPhone();
+    this.setupSharing();
   }
 
   componentWillUpdate(prevProps:PhoneTestProps,prevState:PhoneTestState) {
     const lastUrl = prevState.url;
     const thisUrl = this.state.url;
     if(lastUrl !== thisUrl) {
-      this.setupPhone();
+      this.setupSharing();
     }
     if(!this.sharing) {
-      this.setupPhone();
+      this.setupSharing();
     }
   }
 
-  setupPhone() {
+  setupSharing() {
     if(this.sharing) {
       this.sharing.disconnect();
     }
@@ -97,7 +97,6 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
     });
     this.sharing.addPublicationListener({newPublication: receivePub});
     this.sharing.initializeAsTop(context);
-    console.log('setupPhone done');
   }
 
   connectionComplete() {

@@ -1,11 +1,13 @@
+import { SharingParent } from "./sharing-parent";
+import { IFramePhoneDown, IFramePhoneFactory } from "./iframe-phone";
+
 import {
-  SharingParent,
-  IFramePhoneDown,
-  IFramePhoneFactory,
+  InitMessageName,
+  InitResponseMessage,
+  InitResponseMessageName,
   Context,
-  PublishResponse,
-  InitResponseCallback
-} from "./index";
+  PublishResponse
+} from "./types";
 
 import * as _ from "lodash";
 
@@ -16,7 +18,7 @@ export interface ChildConnectionParams {
   context:Context;
   iframe: HTMLIFrameElement;
   publishResponseCallback: (p:PublishResponse) => void;
-  initCallback: InitResponseCallback;
+  initCallback?(msg: InitResponseMessage): void;
 }
 
 export class ChildConnection {
@@ -31,7 +33,7 @@ export class ChildConnection {
     this.id = generateFrameId();
     this.context = _.clone(options.context);
     this.context.id = this.id;
-    this.phone = IFramePhoneFactory.ParentEndpoint(this.iframe, ()=> console.log("connecting iframe"));
+    this.phone = IFramePhoneFactory.ParentEndpoint(this.iframe);
     this.connection = new SharingParent({
       callback: options.publishResponseCallback,
       phone: this.phone,
