@@ -13,7 +13,6 @@ import {
   SharingRelay,
   SharableApp,
   Text,
-  IFramePhoneDown,
   PublishResponse } from "../index";
 
 export interface PhoneTestProps {}
@@ -26,7 +25,6 @@ export interface PhoneTestState {
 
 export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestState> {
   public state:PhoneTestState;
-  phone: IFramePhoneDown;
   sharing: SharingRelay;
 
   constructor(props:PhoneTestProps){
@@ -39,11 +37,11 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setupSharing();
   }
 
-  componentWillUpdate(prevProps:PhoneTestProps,prevState:PhoneTestState) {
+  componentDidUpdate(prevProps:PhoneTestProps,prevState:PhoneTestState) {
     const lastUrl = prevState.url;
     const thisUrl = this.state.url;
     if(lastUrl !== thisUrl) {
@@ -91,7 +89,7 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
           launchUrl: `${window.location}`,
           name: "Demo Parent"},
           getDataFunc: (context) => new Promise(
-            (resolve, reject) => resolve([{dataUrl:"(nothing)",name:"nada",type:Text}])
+            (resolve, reject) => resolve([{dataUrl:"(nothing)", name:"nada", type:Text}])
           )
         }
     });
@@ -124,13 +122,9 @@ export class PhoneTestView extends React.Component<PhoneTestProps, PhoneTestStat
                 onChange={ (target,newvalue) => this.setState({url:newvalue})}
                 />
             </div>
-            <div>
-              <span> Phone Status:</span>
-              <span> {connectionStatus} </span>
-            </div>
-            <PublishableListView snapshots={snapshots} />
           </div>
-          <iframe ref='iframe' width={400} height={400} src={url}/>
+          <iframe ref='iframe' src={url}/>
+          <PublishableListView snapshots={snapshots} />
         </div>
       </MuiThemeProvider>
     );
