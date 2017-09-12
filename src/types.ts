@@ -4,11 +4,12 @@ export const Text       = {type: "text/plain",               extension: "txt"  }
 export const Binary     = {type: "application/octet-stream", extension: "bin"  };
 export const Json       = {type: "application/json",         extension: "json" };
 
-export const InitMessageName            = "SharinatorInit";
-export const InitResponseMessageName    = "SharinitorInitResponse";
+export const MessagePrefix              = "Sharinator";
+export const InitMessageName            = `${MessagePrefix}Init`;
+export const InitResponseMessageName    = `${MessagePrefix}SharinitorInitResponse`;
 
-export const PublishMessageName         = "SharinatorPublish";
-export const PublishResponseMessageName = "SharinatorPublishResponse";
+export const PublishMessageName         = `${MessagePrefix}Publish`;
+export const PublishResponseMessageName = `${MessagePrefix}PublishResponse`;
 
 export const PublishMessage = { send: true };
 
