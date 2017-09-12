@@ -7,9 +7,11 @@ for the purpose of 'sharing' work between students and teachers.
 
 ## Details ##
 
-There are only 3 message types defined:
+There are four message types defined:
 
 1. `SharinatorInit`
+    * Sends data about the session in `sharing-init` format
+1. `SharinitorInitResponse`
     * Sends data about the session in `sharing-init` format
 2. `SharinatorPublish`
     * User intiated request for new data.
@@ -72,18 +74,9 @@ is something like this:
 
 You can view an [online demo](http://sharing-demo.concord.org/branch/master/demo.html).
 
-Deployment happens automagically using travis and `branch/<branchname>` urls.
-Production branch goes to [http://sharing-demo.concord.org/demo.html](http://sharing-demo.concord.org/branch/master/demo.html)
+You can epxierment with that demo by cloning the gihub repo [cc-sharing-demo](https://github.com/concord-consortium/cc-sharing-demo)
 
-## Running a local demo & tester app ##
-(This process could use some improvement …  )
-
-1. Compile `npm run build`
-1. from the root director run `live-server .`
-2. navigate to [http://127.0.0.1:8080/src/demo/demo.html](http://127.0.0.1:8080/src/demo/demo.html)
-
-If you want to work on the demo, then you can hack on files in  `src/demo/*` while running `webpack --watch` and keep `live-server` running,.
-
+See that README document for more info.
 
 
 ## Rough Messaging Diagram

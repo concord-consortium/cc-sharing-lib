@@ -1,16 +1,12 @@
 /* global module:true, require:true __dirname */
 
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
   entry: {
     'sharing-lib': ["./src/index.ts"],
-    'sharing-lib.min': ["./src/index.ts"],
-    'parent-demo': ["./src/demo/parent-view.tsx"],
-    'client-demo': ["./src/demo/client-view.tsx"],
-    'iframe-demo': ["./src/demo/iframe-demo.ts"]
+    'sharing-lib.min': ["./src/index.ts"]
   },
 
   output: {
@@ -21,16 +17,11 @@ module.exports = {
     umdNamedDefine: true
   },
   resolve: {
-    extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx"]
+    extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
   },
   devtool: "source-map",
   module: {
     loaders: [
-      {
-        test: /\.jsx?$/,
-        loader: "babel-loader",
-        exclude: /node_modules/
-      },
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
       {
         test: /\.tsx?$/,
@@ -48,9 +39,6 @@ module.exports = {
       minimize: true,
       sourceMap: true,
       include: /\.min\.js$/,
-    }),
-    new CopyWebpackPlugin([
-      { from: "src/demo/*.html",  flatten: "true"}
-    ])
+    })
   ]
 };
