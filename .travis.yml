@@ -4,7 +4,7 @@ node_js:
 install:
   - travis_retry yarn
 before_script: webpack
-script: npm test
+script: npm run build
 cache:
   yarn: true
   directories:
