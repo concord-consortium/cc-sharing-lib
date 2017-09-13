@@ -72,7 +72,7 @@ is something like this:
 
 ## Running the demo & tester app ##
 
-You can view an [online demo](http://sharing-demo.concord.org/branch/master/demo.html).
+You can view an [online demo](http://sharing-demo.concord.org/branch/master/index.html).
 
 You can epxierment with that demo by cloning the gihub repo [cc-sharing-demo](https://github.com/concord-consortium/cc-sharing-demo)
 

@@ -41,7 +41,7 @@ constructor(params:SharingParentParams) {
   }
 
   version() {
-    return "1.0.0";  // TBD
+    return "1.0.6";
   }
 
   adjustContext() {

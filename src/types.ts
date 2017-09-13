@@ -1,4 +1,6 @@
 export const Jpeg       = {type: "image/jpeg",               extension: "jpg"  };
+export const Png        = {type: "image/png",                extension: "png"  };
+export const Gif        = {type: "image/gif",                extension: "gif"  };
 export const Csv        = {type: "text/csv",                 extension: "csv"  };
 export const Text       = {type: "text/plain",               extension: "txt"  };
 export const Binary     = {type: "application/octet-stream", extension: "bin"  };
@@ -6,7 +8,7 @@ export const Json       = {type: "application/json",         extension: "json" }
 
 export const MessagePrefix              = "Sharinator";
 export const InitMessageName            = `${MessagePrefix}Init`;
-export const InitResponseMessageName    = `${MessagePrefix}SharinitorInitResponse`;
+export const InitResponseMessageName    = `${MessagePrefix}InitResponse`;
 
 export const PublishMessageName         = `${MessagePrefix}Publish`;
 export const PublishResponseMessageName = `${MessagePrefix}PublishResponse`;
