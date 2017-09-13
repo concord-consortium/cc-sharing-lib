@@ -12,7 +12,8 @@
     "watch": "webpack --watch",
     "clean": "shx rm -rf _bundles lib lib-esm",
     "build": "npm run clean && tsc && tsc -m es6 --outDir lib-esm && webpack",
-    "release": "npm publish"
+    "release": "npm publish",
+    "publish": "npm publish"
   },
   "author": "Noah Paessel npaessel@concord.org",
   "license": "MIT",
