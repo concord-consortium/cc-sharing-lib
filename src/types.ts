@@ -1,10 +1,12 @@
-export const Jpeg       = {type: "image/jpeg",               extension: "jpg"  };
-export const Png        = {type: "image/png",                extension: "png"  };
-export const Gif        = {type: "image/gif",                extension: "gif"  };
-export const Csv        = {type: "text/csv",                 extension: "csv"  };
-export const Text       = {type: "text/plain",               extension: "txt"  };
-export const Binary     = {type: "application/octet-stream", extension: "bin"  };
-export const Json       = {type: "application/json",         extension: "json" };
+export const Jpeg             = {type: "image/jpeg",                       extension: "jpg"      };
+export const Png              = {type: "image/png",                        extension: "png"      };
+export const Gif              = {type: "image/gif",                        extension: "gif"      };
+export const Csv              = {type: "text/csv",                         extension: "csv"      };
+export const Text             = {type: "text/plain",                       extension: "txt"      };
+export const Binary           = {type: "application/octet-stream",         extension: "bin"      };
+export const Json             = {type: "application/json",                 extension: "json"     };
+export const CODAP            = {type: "application/x-codap",              extension: "codap"    };
+export const CODAPDataContext = {type: "application/x-codap-data-context", extension: "codap-dc" };
 
 export const MessagePrefix              = "Sharinator";
 export const InitMessageName            = `${MessagePrefix}Init`;
