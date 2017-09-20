@@ -33,6 +33,7 @@ export interface PublicationListener {
 export interface SharableApp {
   application: LaunchApplication;
   getDataFunc(context:Context): Promise<Representation[]>;
+  initCallback?(context:Context): void;
 }
 
 export interface User {

@@ -61,8 +61,11 @@ export class SharingClient {
     this.publicationListeners.push(listener);
   }
 
-  handleInitMessage(args:Context) {
-    this.sendInitResponse(args);
+  handleInitMessage(context:Context) {
+    if(this.app.initCallback) {
+      this.app.initCallback(context);
+    }
+    this.sendInitResponse(context);
   }
 
   handlePublishMessage() {
