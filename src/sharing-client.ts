@@ -7,6 +7,8 @@ import {
   PublishResponse,
   PublishMessageName,
   PublishResponseMessageName,
+  PublishFailMessage,
+  PublishFailMessageName,
   Representation,
   SharableApp,
   PublicationListener
@@ -25,6 +27,7 @@ export class SharingClient {
   context: Context;
   app: SharableApp;
   publicationListeners: PublicationListener[];
+  failPublishFunc?(reason:any): void;
 
   constructor(params:SharingClientParams) {
     this.publicationListeners = [];
@@ -85,17 +88,38 @@ export class SharingClient {
 
   sendPublishResponse(children:PublishResponse[]=[]) {
     const promise = this.app.getDataFunc(this.context);
-    return promise.then((representations) => {
-      const publishContent:PublishResponse = {
-        context: this.context,
-        createdAt: new Date().toISOString(),
-        application: this.app.application,
-        representations: representations,
-        children: children
-      };
-      this.phone.post(PublishResponseMessageName, publishContent);
-      this.notifyPublicationListeners(publishContent);
-    });
+    return promise
+      .then((representations) => {
+        const publishContent:PublishResponse = {
+          context: this.context,
+          createdAt: new Date().toISOString(),
+          application: this.app.application,
+          representations: representations,
+          children: children
+        };
+        this.phone.post(PublishResponseMessageName, publishContent);
+        this.notifyPublicationListeners(publishContent);
+      })
+      .catch((reason:any) => this.failPublish(reason));
+  }
+
+  log(msg:any) {
+    if(console && console.log) {
+      console.log(msg);
+    }
+  }
+
+  failPublish(reason:any) {
+    this.log("💀 failure to publish");
+    this.log(reason);
+    if(this.failPublishFunc) {
+      this.failPublishFunc(reason);
+    }
+    this.phone.post(PublishFailMessageName, {reason:reason} );
+  }
+
+  setFailPublishFunc(func:(m:any)=>void) {
+    this.failPublishFunc = func;
   }
 
   // TODO: Rename this, and add initialization handling method too.
@@ -107,8 +131,9 @@ export class SharingClient {
     });
   }
 
-  // TBD: We will need to create and manage the promise ourselves.
+  // TODO: We will need to create and manage the promise ourselves.
   cancelPublish() {
 
   }
+
 }

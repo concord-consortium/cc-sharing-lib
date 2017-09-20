@@ -14,8 +14,10 @@ export const InitResponseMessageName    = `${MessagePrefix}InitResponse`;
 
 export const PublishMessageName         = `${MessagePrefix}Publish`;
 export const PublishResponseMessageName = `${MessagePrefix}PublishResponse`;
+export const PublishMessage             = { send: true };
 
-export const PublishMessage = { send: true };
+export const PublishFailMessageName     = `${MessagePrefix}PublishFail`;
+
 
 export type Url                = string;
 export type Identifier         = string | number;
@@ -88,4 +90,8 @@ export interface PublishResponse {
   application: LaunchApplication;
   representations: Representation[];
   children: PublishResponse[];
+}
+
+export interface PublishFailMessage {
+  reason: string;
 }
