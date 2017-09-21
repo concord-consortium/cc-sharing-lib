@@ -11,12 +11,11 @@ import {
 
 import * as _ from "lodash";
 
-let iframeCounter = 0;
-const generateFrameId = () => ++iframeCounter;
 
 export interface ChildConnectionParams {
   context:Context;
   iframe: HTMLIFrameElement;
+  id: string;
   publishResponseCallback: (p:PublishResponse) => void;
   initCallback?(msg: InitResponseMessage): void;
 }
@@ -26,13 +25,12 @@ export class ChildConnection {
   iframe: HTMLIFrameElement;
   phone: IFramePhoneDown;
   context: Context;
-  id: number;
+  id: string;
 
   constructor(options: ChildConnectionParams) {
     this.iframe = options.iframe;
-    this.id = generateFrameId();
+    this.id = options.id;
     this.context = _.clone(options.context);
-    this.context.id = this.id;
     this.phone = IFramePhoneFactory.ParentEndpoint(this.iframe);
     this.connection = new SharingParent({
       callback: options.publishResponseCallback,
@@ -47,5 +45,8 @@ export class ChildConnection {
   }
   sendPublish() {
     this.connection.sendPublish();
+  }
+  sendInit(newContext?:Context) {
+    this.connection.sendInit(newContext);
   }
 }

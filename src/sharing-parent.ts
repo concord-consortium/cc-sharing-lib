@@ -12,9 +12,9 @@ import {
 } from "./types";
 
 import { IFramePhoneDown } from "./iframe-phone";
-
-import { v1 as uuid} from "uuid";
-
+import { Version } from "./version";
+import { v1 as uuid  } from "uuid";
+import { omit, merge, pick } from "lodash";
 
 export type PublishResultsCallback = (p:PublishResponse) => void;
 
@@ -32,28 +32,30 @@ export class SharingParent {
 
 constructor(params:SharingParentParams) {
     this.phone = params.phone;
-    this.context = params.context;
+    this.setContext(params.context);
     this.initCallback = params.initCallback;
-    this.adjustContext();
     this.phone.addListener(PublishResponseMessageName, params.callback);
     this.phone.addListener(InitResponseMessageName, this.initReceipt.bind(this));
+    this.sendInit();
+  }
+
+  setContext(parentContext:Context) {
+    const uniq = uuid();
+    const localProps = ['id','localId'];
+    const defaults = {
+      protocolVersion: Version,
+      requestTime: new Date().toISOString(),
+      id: uniq,
+      localId: uniq
+    };
+    this.context = merge(defaults, parentContext, pick(this.context, localProps)) as Context;
+  }
+
+  sendInit(newContext?:Context) {
+    if(newContext) {
+      this.setContext(newContext);
+    }
     this.phone.post(InitMessageName, this.context);
-  }
-
-  version() {
-    return "1.0.8";
-  }
-
-  adjustContext() {
-    this.context.protocolVersion = this.context.protocolVersion
-      ? this.context.protocolVersion
-      : this.version();
-    this.context.requestTime = this.context.requestTime
-      ? this.context.requestTime
-      : new Date().toISOString();
-    this.context.localId = this.context.localId
-      ? this.context.localId
-      : uuid();
   }
 
   sendPublish() {

@@ -13,9 +13,10 @@ import {
   SharableApp,
   PublicationListener
 } from "./types";
-
+import { v1 as uuid  } from "uuid";
 import { IFramePhoneUp, IFramePhoneFactory } from "./iframe-phone";
-import * as _ from "lodash";
+import { merge, pick, omit, each } from "lodash";
+import { Version } from "./version";
 
 export interface SharingClientParams {
   phone?: IFramePhoneUp;
@@ -26,10 +27,12 @@ export class SharingClient {
   phone: IFramePhoneUp;
   context: Context;
   app: SharableApp;
+  completedInit: boolean;
   publicationListeners: PublicationListener[];
   failPublishFunc?(reason:any): void;
 
   constructor(params:SharingClientParams) {
+    this.completedInit = false;
     this.publicationListeners = [];
     if(params.phone) {
       this.phone = params.phone;
@@ -42,7 +45,6 @@ export class SharingClient {
     this.phone.addListener(
       InitMessageName,
       (_context:Context) => {
-        this.setContext(_context);
         this.handleInitMessage(_context);
       }
     );
@@ -53,19 +55,35 @@ export class SharingClient {
     );
   }
 
-  setContext(newContext:Context) {
-    this.context = newContext;
+  setContext(parentContext:Context) {
+    const uniq = uuid();
+    const localProps = ['id','localId'];
+    const defaults = {
+      protocolVersion: Version,
+      requestTime: new Date().toISOString(),
+      id: uniq,
+      localId: uniq
+    };
+    this.context = merge(defaults, parentContext, pick(this.context, localProps)) as Context;
   }
+
 
   addPublicationListener(listener:PublicationListener) {
     this.publicationListeners.push(listener);
   }
 
-  handleInitMessage(context:Context) {
+  handleInitMessage(parentContext:Context) {
+    this.setContext(parentContext);
     if(this.app.initCallback) {
-      this.app.initCallback(context);
+      this.app.initCallback(this.context);
     }
-    this.sendInitResponse(context);
+    // We only want to send the initResponse once.
+    // Otherwise we confuse the sharing-relay.
+    // we might receive a second init message when context has changed.
+    if(!this.completedInit) {
+      this.sendInitResponse(this.context);
+      this.completedInit =true;
+    }
   }
 
   handlePublishMessage() {
@@ -127,7 +145,7 @@ export class SharingClient {
 
   // TODO: Rename this, and add initialization handling method too.
   notifyPublicationListeners(publishContent: PublishResponse) {
-    _.each(this.publicationListeners, (l) => {
+    each(this.publicationListeners, (l) => {
       if(l.newPublication) {
         l.newPublication(publishContent);
       }

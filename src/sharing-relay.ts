@@ -48,7 +48,7 @@ export class SharingRelay extends SharingClient {
     return(frames);
   }
 
-  disconnect() {
+  disconnectChildren() {
     _.each(this.connectedChildren, (c) => {
       c.disconnect();
     });
@@ -57,6 +57,10 @@ export class SharingRelay extends SharingClient {
     });
     this.calledChildren = [];
     this.connectedChildren = [];
+  }
+
+  disconnect() {
+    this.disconnectChildren();
     super.disconnect();
   }
 
@@ -71,8 +75,9 @@ export class SharingRelay extends SharingClient {
   }
 
   connectChild(iframe:HTMLIFrameElement) {
+    const iFrameId = uuid();
     const initCallback = (i:InitResponseMessage) => {
-      const child = _.findLast(this.calledChildren, (c) => c.context.id === i.id);
+      const child = _.findLast(this.calledChildren, (c) => (c.id === iFrameId) );
       if(child) {
         this.connectedChildren.push(child);
       }
@@ -80,15 +85,27 @@ export class SharingRelay extends SharingClient {
     const child = new ChildConnection({
       context: this.context,
       iframe: iframe,
+      id: iFrameId,
       publishResponseCallback: this.collectResponse.bind(this),
       initCallback: initCallback.bind(this)
     });
     this.calledChildren.push(child);
   }
 
-  handleInitMessage(args:Context) {
-    super.handleInitMessage(args);
-    this.connectAllChildren();
+  handleInitMessage(context:Context) {
+    super.handleInitMessage(context);
+    if(this.calledChildren.length < 1) {
+      this.connectAllChildren();
+    } else {
+      _.each(this.calledChildren, (ch) => ch.sendInit(context));
+    }
+  }
+
+  resendInit(newContext?:Context) {
+    if(newContext) {
+      this.setContext(newContext);
+    }
+    this.handleInitMessage(this.context);
   }
 
   handlePublishMessage(){
