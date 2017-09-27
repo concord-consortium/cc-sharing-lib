@@ -55,6 +55,13 @@ export class SharingClient {
     );
   }
 
+  getApplication():LaunchApplication {
+    if (typeof this.app.application === "function") {
+      return this.app.application()
+    }
+    return this.app.application
+  }
+
   setContext(parentContext:Context) {
     const uniq = uuid();
     const localProps = ['id','localId'];
@@ -101,20 +108,21 @@ export class SharingClient {
     const initResponse:InitResponseMessage = {
       localId: this.context.localId,
       id: this.context.id,
-      Application: this.app.application
+      Application: this.getApplication()
     };
     this.phone.post(InitResponseMessageName, initResponse);
   }
 
 
   sendPublishResponse(children:PublishResponse[]=[]) {
+    debugger
     const promise = this.app.getDataFunc(this.context);
     return promise
       .then((representations) => {
         const publishContent:PublishResponse = {
           context: this.context,
           createdAt: new Date().toISOString(),
-          application: this.app.application,
+          application: this.getApplication(),
           representations: representations,
           children: children
         };
