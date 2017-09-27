@@ -115,7 +115,6 @@ export class SharingClient {
 
 
   sendPublishResponse(children:PublishResponse[]=[]) {
-    debugger
     const promise = this.app.getDataFunc(this.context);
     return promise
       .then((representations) => {
