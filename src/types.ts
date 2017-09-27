@@ -31,7 +31,7 @@ export interface PublicationListener {
 }
 
 export interface SharableApp {
-  application: LaunchApplication;
+  application: LaunchApplication | LaunchApplicationFn;
   getDataFunc(context:Context): Promise<Representation[]>;
   initCallback?(context:Context): void;
 }
@@ -84,6 +84,7 @@ export interface LaunchApplication {
   launchUrl: Url;
   name: string;
 }
+export type LaunchApplicationFn = () => LaunchApplication
 
 export interface PublishResponse {
   context: Context;
