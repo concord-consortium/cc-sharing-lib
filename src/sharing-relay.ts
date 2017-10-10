@@ -111,6 +111,14 @@ export class SharingRelay extends SharingClient {
   }
 
   handlePublishMessage(){
+    // ensure that any closed children since the last publish are disconnected
+    const missingChildren = this.connectedChildren.filter((child) => !document.body.contains(child.iframe))
+    missingChildren.forEach((missingChild) => {
+      missingChild.disconnect()
+      this.connectedChildren.splice(this.connectedChildren.indexOf(missingChild), 1)
+      this.calledChildren.splice(this.calledChildren.indexOf(missingChild), 1)
+    })
+
     this.childResponses = [];
     this.promiseRecords = {};
     const promises = _.map(this.connectedChildren, (child) => {
