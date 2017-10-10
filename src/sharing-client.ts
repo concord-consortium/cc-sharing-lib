@@ -23,6 +23,8 @@ export interface SharingClientParams {
   app: SharableApp;
 }
 
+export type PublishResponseFilter = (unfiltered:PublishResponse) => PublishResponse
+
 export class SharingClient {
   phone: IFramePhoneUp;
   context: Context;
@@ -30,6 +32,7 @@ export class SharingClient {
   completedInit: boolean;
   publicationListeners: PublicationListener[];
   failPublishFunc?(reason:any): void;
+  private publishResponseFilter:PublishResponseFilter|null
 
   constructor(params:SharingClientParams) {
     this.completedInit = false;
@@ -64,12 +67,11 @@ export class SharingClient {
 
   setContext(parentContext:Context) {
     const uniq = uuid();
-    const localProps = ['id','localId'];
+    const localProps = ['id'];
     const defaults = {
       protocolVersion: Version,
       requestTime: new Date().toISOString(),
-      id: uniq,
-      localId: uniq
+      id: uniq
     };
     this.context = merge(defaults, parentContext, pick(this.context, localProps)) as Context;
   }
@@ -77,6 +79,19 @@ export class SharingClient {
 
   addPublicationListener(listener:PublicationListener) {
     this.publicationListeners.push(listener);
+  }
+
+  setPublishResponseFilter(publishResponseFilter:PublishResponseFilter) {
+    this.publishResponseFilter = publishResponseFilter;
+  }
+
+  filterPublishResponse(unfiltered:PublishResponse, callback: (filtered:PublishResponse) => void) {
+    if (this.publishResponseFilter) {
+      callback(this.publishResponseFilter(unfiltered))
+    }
+    else {
+      callback(unfiltered)
+    }
   }
 
   handleInitMessage(parentContext:Context) {
@@ -106,7 +121,6 @@ export class SharingClient {
 
   sendInitResponse(args:Context) {
     const initResponse:InitResponseMessage = {
-      localId: this.context.localId,
       id: this.context.id,
       Application: this.getApplication()
     };
@@ -125,8 +139,10 @@ export class SharingClient {
           representations: representations,
           children: children
         };
-        this.phone.post(PublishResponseMessageName, publishContent);
-        this.notifyPublicationListeners(publishContent);
+        this.filterPublishResponse(publishContent, (filteredPublishContent) => {
+          this.phone.post(PublishResponseMessageName, publishContent);
+          this.notifyPublicationListeners(publishContent);
+        })
       })
       .catch((reason:any) => this.failPublish(reason));
   }

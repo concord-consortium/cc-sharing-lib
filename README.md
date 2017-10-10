@@ -31,12 +31,11 @@ is something like this:
 ```
     const context:Context = {
         protocolVersion: "1.0.0",
-        user: {displayName: "noah", id:"1"},
+        user: 1, // <string>|<number>
         id: uuid.v1(),
-        group: {displayName: "noahs group", id:"1"},
-        offering: {displayName: "offering_id", id: "1"},
-        clazz:  {displayName: "clazz_id", id: "1"},
-        localId: "x",
+        group: 2, // <string>|<number>
+        offering: 3, // <string>|<number>
+        class: 4, // <string>|<number>
         requestTime: new Date().toISOString()
     };
 

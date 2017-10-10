@@ -74,16 +74,18 @@ export class SharingRelay extends SharingClient {
     this.promiseRecords[resp.context.id].resolve();
   }
 
-  connectChild(iframe:HTMLIFrameElement) {
-    const iFrameId = uuid();
+  connectChild(iframe:HTMLIFrameElement, id?:string) {
+    const iFrameId = id || uuid();
     const initCallback = (i:InitResponseMessage) => {
       const child = _.findLast(this.calledChildren, (c) => (c.id === iFrameId) );
       if(child) {
         this.connectedChildren.push(child);
       }
     };
+    const childContext = _.clone(this.context)
+    childContext.id = iFrameId
     const child = new ChildConnection({
-      context: this.context,
+      context: childContext,
       iframe: iframe,
       id: iFrameId,
       publishResponseCallback: this.collectResponse.bind(this),
@@ -109,6 +111,14 @@ export class SharingRelay extends SharingClient {
   }
 
   handlePublishMessage(){
+    // ensure that any closed children since the last publish are disconnected
+    const missingChildren = this.connectedChildren.filter((child) => !document.body.contains(child.iframe))
+    missingChildren.forEach((missingChild) => {
+      missingChild.disconnect()
+      this.connectedChildren.splice(this.connectedChildren.indexOf(missingChild), 1)
+      this.calledChildren.splice(this.calledChildren.indexOf(missingChild), 1)
+    })
+
     this.childResponses = [];
     this.promiseRecords = {};
     const promises = _.map(this.connectedChildren, (child) => {
