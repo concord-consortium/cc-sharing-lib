@@ -81,11 +81,13 @@ export interface SharingParams {
   sharing_class?: Identifier;
   sharing_offering?: Identifier;
   sharing_group?: Identifier;
+  sharing_clone?: Identifier;
 }
 
 export type SharingParamName =
   "sharing_offering" |
   "sharing_class" |
-  "sharing_group";
+  "sharing_group" |
+  "sharing_clone";
 
 export const SharingParamDefault = "default"
