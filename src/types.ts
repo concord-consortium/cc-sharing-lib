@@ -7,6 +7,7 @@ export const Binary           = {type: "application/octet-stream",         exten
 export const Json             = {type: "application/json",                 extension: "json"     };
 export const CODAP            = {type: "application/x-codap",              extension: "codap"    };
 export const CODAPDataContext = {type: "application/x-codap-data-context", extension: "codap-dc" };
+export const CollabSpace      = {type: "application/x-collab-space",       extension: "collab-space" };
 
 export const MessagePrefix              = "Sharinator";
 export const InitMessageName            = `${MessagePrefix}Init`;
@@ -36,42 +37,19 @@ export interface SharableApp {
   initCallback?(context:Context): void;
 }
 
-export interface User {
-  displayName: string;
-  id: Identifier;
-}
-
-export interface Group {
-  displayName: string;
-  id: Identifier;
-}
-
-export interface Offering {
-  displayName: string;
-  id: Identifier;
-}
-
-export interface Clazz {
-  displayName: string;
-  id: Identifier;
-}
-
 export interface InitResponseMessage {
   id: Identifier;
-  localId: Identifier;
   Application: LaunchApplication;
 }
-
 
 export interface Context {
   protocolVersion: ProtocolVersion;
   id: Identifier;
   requestTime: ISODateString;
-  user: User;
-  group: Group;
-  offering: Offering;
-  clazz: Clazz;
-  localId: Identifier;
+  user: Identifier;
+  group: Identifier;
+  offering: Identifier;
+  class: Identifier;
 }
 
 export interface Representation {
@@ -81,6 +59,7 @@ export interface Representation {
 }
 
 export interface LaunchApplication {
+  type?: RepresentationType
   launchUrl: Url;
   name: string;
 }
@@ -97,3 +76,16 @@ export interface PublishResponse {
 export interface PublishFailMessage {
   reason: string;
 }
+
+export interface SharingParams {
+  sharing_class?: Identifier;
+  sharing_offering?: Identifier;
+  sharing_group?: Identifier;
+}
+
+export type SharingParamName =
+  "sharing_offering" |
+  "sharing_class" |
+  "sharing_group";
+
+export const SharingParamDefault = "default"

@@ -74,16 +74,18 @@ export class SharingRelay extends SharingClient {
     this.promiseRecords[resp.context.id].resolve();
   }
 
-  connectChild(iframe:HTMLIFrameElement) {
-    const iFrameId = uuid();
+  connectChild(iframe:HTMLIFrameElement, id?:string) {
+    const iFrameId = id || uuid();
     const initCallback = (i:InitResponseMessage) => {
       const child = _.findLast(this.calledChildren, (c) => (c.id === iFrameId) );
       if(child) {
         this.connectedChildren.push(child);
       }
     };
+    const childContext = _.clone(this.context)
+    childContext.id = iFrameId
     const child = new ChildConnection({
-      context: this.context,
+      context: childContext,
       iframe: iframe,
       id: iFrameId,
       publishResponseCallback: this.collectResponse.bind(this),

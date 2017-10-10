@@ -30,7 +30,7 @@ export class SharingParent {
   context: Context;
   initCallback?(msg: InitResponseMessage): void;
 
-constructor(params:SharingParentParams) {
+  constructor(params:SharingParentParams) {
     this.phone = params.phone;
     this.setContext(params.context);
     this.initCallback = params.initCallback;
@@ -41,12 +41,11 @@ constructor(params:SharingParentParams) {
 
   setContext(parentContext:Context) {
     const uniq = uuid();
-    const localProps = ['id','localId'];
+    const localProps = ['id'];
     const defaults = {
       protocolVersion: Version,
       requestTime: new Date().toISOString(),
-      id: uniq,
-      localId: uniq
+      id: uniq
     };
     this.context = merge(defaults, parentContext, pick(this.context, localProps)) as Context;
   }
